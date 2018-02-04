@@ -29,14 +29,14 @@ class Ship():
         self.screen.blit(self.image, self.rect)
 
     def update(self, ai_settings):
-        if self.moving_up:
+        if self.moving_up and self.rect.top > 0:
             self.rect.bottom -= ai_settings.ship_speed_factor
-        if self.moving_down:
+        if self.moving_down and self.rect.bottom < self.screen_rect.bottom:
             self.rect.bottom += ai_settings.ship_speed_factor
-        if self.moving_left:
+        if self.moving_left and self.rect.left > 0:
             self.center -= ai_settings.ship_speed_factor
-        if self.moving_right:
+        if self.moving_right and self.rect.right < self.screen_rect.right:
             self.center += ai_settings.ship_speed_factor
-            
+
         # Update ship center from float center
         self.rect.centerx = self.center
