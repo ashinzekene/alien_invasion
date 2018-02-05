@@ -35,8 +35,9 @@ def check_events_key_down(event, ai_settings, screen, ship, bullets):
         ship.moving_down = True
     if event.key == pygame.K_SPACE:
         # create a new bullet and add it to the bullet group
-        new_bullet = Bullet(ai_settings, screen, ship)
-        bullets.add(new_bullet)
+        if len(bullets) < ai_settings.bullet_limit:
+            new_bullet = Bullet(ai_settings, screen, ship)
+            bullets.add(new_bullet)
 
     
 def update_screen(ai_settings, screen, ship, bullets):
