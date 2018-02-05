@@ -1,13 +1,14 @@
 import pygame
 
+
 class Ship():
-    """Contains configurations for the ship""" 
-    
+    """Contains configurations for the ship"""
+
     def __init__(self, ai_settings, screen):
         """initializes the ships and sets its position"""
 
         self.screen = screen
-        self.ai_settings =ai_settings
+        self.ai_settings = ai_settings
 
         self.image = pygame.image.load('images/ship.bmp')
         self.rect = self.image.get_rect()
@@ -23,7 +24,6 @@ class Ship():
         self.moving_left = False
         self.moving_down = False
         self.moving_up = False
-        
 
     def blitme(self):
         """Draw the ship at its position"""
