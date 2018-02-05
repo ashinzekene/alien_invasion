@@ -21,13 +21,7 @@ def run_game():
     while True:
         gf.check_events(ai_settings, screen, ship, bullets)
         ship.update(ai_settings)
-        bullets.update()
-
-        # removing unviewable bullets
-        for bullet in bullets.copy():
-            if bullet.rect.y <= 2:
-                bullets.remove(bullet)
-
+        gf.update_bullets(bullets)
         gf.update_screen(ai_settings, screen, ship, bullets)
 
 run_game()
