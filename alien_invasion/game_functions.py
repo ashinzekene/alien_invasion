@@ -54,11 +54,19 @@ def update_screen(ai_settings, aliens, bullets, screen, ship):
     pygame.display.flip()
 
 
-def update_bullets(aliens, bullets):
+def update_bullets(ai_settings, aliens, bullets, screen, ship):
     bullets.update()
 
     # Check for collision with aliens
     collision = pygame.sprite.groupcollide(aliens, bullets, True, True)
+
+    if len(aliens) == 0:
+        bullets.empty()
+        create_fleet(ai_settings, aliens, screen, ship)
+        ai_settings.alien_speed_factor += 0.2
+        ai_settings.fleet_drop_speed += 3
+        ai_settings.ship_speed_factor += 0.5
+        ai_settings.bullet_limit += 0.5
     
     # removing unviewable bullets
     for bullet in bullets.copy():
@@ -93,9 +101,9 @@ def create_alien(ai_settings, alien_number, aliens, screen, row_number):
     alien_width = alien.rect.width
     alien_height = alien.rect.height
     # left_margin + alien_space ( 2 alien width) * alien number
-    alien.x = alien_width + 2 * alien_width * alien_number
+    alien.x = ai_settings.fleet_x_margin + 2 * alien_width * alien_number
     # top_margin + alien_space .....
-    alien.y = alien_height + 2 * alien_height * row_number
+    alien.y = ai_settings.fleet_y_margin + 2 * alien_height * row_number
     alien.rect.x = alien.x
     alien.rect.y = alien.y
     aliens.add(alien)
