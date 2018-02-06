@@ -109,3 +109,24 @@ def get_number_aliens_y(ai_settings, alien_height, ship_height):
     available_space_y = ai_settings.screen_height - (3 * alien_height) - ship_height
     number_of_aliens = int(available_space_y / (2 * alien_height))
     return number_of_aliens
+
+
+def update_aliens(ai_settings, aliens):
+    """Check if fleet is at the edge then update"""
+    check_fleet_edges(ai_settings, aliens)
+    aliens.update()
+
+
+def check_fleet_edges(ai_settings, aliens):
+    for alien in aliens.sprites():
+        if alien.check_edges():
+            change_fleet_direction(ai_settings, aliens)
+            break
+
+def change_fleet_direction(ai_settings, aliens):
+    """Drop the entire fleet and change the fleet's direction"""
+    # MODIFY LATER TO CHANGE DIRECTION OF ONLY ONE ALIEN
+    for alien in aliens.sprites():
+        alien.rect.y += ai_settings.fleet_drop_speed
+    # chnage direction
+    ai_settings.fleet_direction *= -1
