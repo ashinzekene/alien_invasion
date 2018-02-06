@@ -68,16 +68,44 @@ def fire_bullet(ai_settings, bullets, ship, screen):
         bullets.add(new_bullet)
 
 
-def create_fleet(ai_settings, screen, aliens):
+def create_fleet(ai_settings, aliens, screen, ship):
     """Create full list of aliens"""
+
     alien = Alien(ai_settings, screen)
     alien_width = alien.rect.width
-    available_space = ai_settings.screen_width - (2 * alien_width)
-    number_aliens_x = int(available_space / (2 * alien_width))
-
+    alien_height = alien.rect.height
+    ship_height = ship.rect.height
     # create the first row of aliens
+    number_aliens_x = get_number_aliens_x(ai_settings, alien_width, screen)
+    number_aliens_y = get_number_aliens_y(ai_settings, alien_height, ship_height)
+
     for alien_number in range(number_aliens_x):
-        alien = Alien(ai_settings, screen)
-        alien.x = alien_width + 2 * alien_width * alien_number
-        alien.rect.x = alien.x
-        aliens.add(alien)
+        for row_number in range(number_aliens_y):
+            create_alien(ai_settings, alien_number, aliens, screen, row_number)
+
+
+def create_alien(ai_settings, alien_number, aliens, screen, row_number):
+    alien = Alien(ai_settings, screen)
+    alien_width = alien.rect.width
+    alien_height = alien.rect.height
+    # left_margin + alien_space ( 2 alien width) * alien number
+    alien.x = alien_width + 2 * alien_width * alien_number
+    # top_margin + alien_space .....
+    alien.y = alien_height + 2 * alien_height * row_number
+    alien.rect.x = alien.x
+    alien.rect.y = alien.y
+    aliens.add(alien)
+
+
+def get_number_aliens_x(ai_settings, alien_width, screen):
+    """Deteermine the number of aliens tht fit into a row"""
+    available_space_x = ai_settings.screen_width - (2 * alien_width)
+    number_aliens_x = int(available_space_x / (2 * alien_width))
+    return number_aliens_x
+
+
+def get_number_aliens_y(ai_settings, alien_height, ship_height):
+    """Determine the number of alien columns to fit screen"""
+    available_space_y = ai_settings.screen_height - (3 * alien_height) - ship_height
+    number_of_aliens = int(available_space_y / (2 * alien_height))
+    return number_of_aliens
