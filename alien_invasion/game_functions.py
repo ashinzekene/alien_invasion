@@ -54,8 +54,12 @@ def update_screen(ai_settings, aliens, bullets, screen, ship):
     pygame.display.flip()
 
 
-def update_bullets(bullets):
+def update_bullets(aliens, bullets):
     bullets.update()
+
+    # Check for collision with aliens
+    collision = pygame.sprite.groupcollide(aliens, bullets, True, True)
+    
     # removing unviewable bullets
     for bullet in bullets.copy():
         if bullet.rect.y <= 2:
