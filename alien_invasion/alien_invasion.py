@@ -3,6 +3,7 @@ import pygame
 from pygame.sprite import Group
 from settings import Settings
 from ship import Ship
+from game_stats import GameStats
 import game_functions as gf
 
 
@@ -15,8 +16,10 @@ def run_game():
                                       ai_settings.screen_height))
     screen.fill(ai_settings.bg_color)   
 
+    stats = GameStats(ai_settings)
     bullets = Group()
     aliens = Group()
+    
     
     ship = Ship(ai_settings, screen)
 
@@ -28,7 +31,7 @@ def run_game():
         gf.check_events(ai_settings, screen, ship, bullets)
         ship.update(ai_settings)
         gf.update_bullets(ai_settings, aliens, bullets, screen, ship)
-        gf.update_aliens(ai_settings, aliens)
+        gf.update_aliens(ai_settings, aliens, bullets, screen, ship, stats)
         gf.update_screen(ai_settings, aliens, bullets, screen, ship)
 
 
