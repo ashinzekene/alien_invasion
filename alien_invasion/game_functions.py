@@ -56,7 +56,14 @@ def update_screen(ai_settings, aliens, bullets, screen, ship):
 
 def update_bullets(ai_settings, aliens, bullets, screen, ship):
     bullets.update()
+    check_bullet_alien_collisions(ai_settings, aliens, bullets, screen, ship)
+    # removing unviewable bullets
+    for bullet in bullets.copy():
+        if bullet.rect.y <= 2:
+            bullets.remove(bullet)
 
+
+def check_bullet_alien_collisions(ai_settings, aliens, bullets, screen, ship):
     # Check for collision with aliens
     collision = pygame.sprite.groupcollide(aliens, bullets, True, True)
 
@@ -67,11 +74,6 @@ def update_bullets(ai_settings, aliens, bullets, screen, ship):
         ai_settings.fleet_drop_speed += 3
         ai_settings.ship_speed_factor += 0.5
         ai_settings.bullet_limit += 0.5
-    
-    # removing unviewable bullets
-    for bullet in bullets.copy():
-        if bullet.rect.y <= 2:
-            bullets.remove(bullet)
 
 
 def fire_bullet(ai_settings, bullets, ship, screen):
@@ -89,7 +91,8 @@ def create_fleet(ai_settings, aliens, screen, ship):
     ship_height = ship.rect.height
     # create the first row of aliens
     number_aliens_x = get_number_aliens_x(ai_settings, alien_width, screen)
-    number_aliens_y = get_number_aliens_y(ai_settings, alien_height, ship_height)
+    number_aliens_y = get_number_aliens_y(ai_settings, alien_height,
+                                          ship_height)
 
     for alien_number in range(number_aliens_x):
         for row_number in range(number_aliens_y):
@@ -118,7 +121,8 @@ def get_number_aliens_x(ai_settings, alien_width, screen):
 
 def get_number_aliens_y(ai_settings, alien_height, ship_height):
     """Determine the number of alien columns to fit screen"""
-    available_space_y = ai_settings.screen_height - (3 * alien_height) - ship_height
+    available_space_y = ai_settings.screen_height - (
+        3 * alien_height) - ship_height
     number_of_aliens = int(available_space_y / (2 * alien_height))
     return number_of_aliens
 
@@ -134,6 +138,7 @@ def check_fleet_edges(ai_settings, aliens):
         if alien.check_edges():
             change_fleet_direction(ai_settings, aliens)
             break
+
 
 def change_fleet_direction(ai_settings, aliens):
     """Drop the entire fleet and change the fleet's direction"""
