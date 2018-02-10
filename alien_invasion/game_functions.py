@@ -5,7 +5,7 @@ from bullet import Bullet
 from alien import Alien
 
 
-def check_events(ai_settings, screen, ship, bullets):
+def check_events(ai_settings, bullets, play_button, screen, ship, stats):
     """Respond to keypress and mouse movements"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -14,6 +14,9 @@ def check_events(ai_settings, screen, ship, bullets):
             check_events_key_down(event, ai_settings, screen, ship, bullets)
         elif event.type == pygame.KEYUP:
             check_events_key_up(event, ship)
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            check_play_button(stats, play_button, mouse_x, mouse_y)
 
 
 def check_events_key_up(event, ship):
@@ -45,8 +48,12 @@ def check_events_key_down(event, ai_settings, screen, ship, bullets):
         fire_bullet(ai_settings, bullets, ship, screen)
 
 
-def update_screen(ai_settings, aliens, bullets, screen, ship):
-    """Updates image son the screen and flips to the next screen"""
+def update_screen(ai_settings, aliens, bullets, play_button, screen, ship,
+                  stats):
+    """Updates images on the screen and flips to the next screen"""
+    if not stats.game_active:
+        play_button.draw_button()
+
     screen.fill(ai_settings.bg_color)
     aliens.draw(screen)
     ship.blitme()
@@ -172,7 +179,7 @@ def ship_hit(ai_settings, aliens, bullets, screen, stats, ship):
         sleep(0.5)
     else:
         stats.game_active = False
-    
+
 
 def check_aliens_bottom(ai_settings, aliens, bullets, screen, ship, stats):
     """Detect aliens that get to the bottom of the screen"""
@@ -181,3 +188,9 @@ def check_aliens_bottom(ai_settings, aliens, bullets, screen, ship, stats):
         if alien.rect.bottom >= screen_rect.bottom:
             # Treat as if the aliens hit the ship
             ship_hit(ai_settings, aliens, bullets, screen, stats, ship)
+
+def check_play_button(stats, play_button, mouse_x, mouse_y):
+    """Starts a game when the player clicks"""
+    if play_button.rect.collidepoint(mouse_x, mouse_y):
+        stats.game_active = True
+
