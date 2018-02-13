@@ -3,7 +3,7 @@ import pygame
 from pygame.sprite import Group
 from settings import Settings
 from ship import Ship
-from buttton import Button
+from button import Button
 from game_stats import GameStats
 import game_functions as gf
 

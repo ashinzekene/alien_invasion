@@ -51,14 +51,16 @@ def check_events_key_down(event, ai_settings, screen, ship, bullets):
 def update_screen(ai_settings, aliens, bullets, play_button, screen, ship,
                   stats):
     """Updates images on the screen and flips to the next screen"""
-    if not stats.game_active:
-        play_button.draw_button()
 
     screen.fill(ai_settings.bg_color)
     aliens.draw(screen)
     ship.blitme()
     for bullet in bullets.sprites():
         bullet.draw_bullet()
+
+    if not stats.game_active:
+        play_button.draw_button()
+        
     pygame.display.flip()
 
 
