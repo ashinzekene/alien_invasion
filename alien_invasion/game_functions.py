@@ -5,7 +5,7 @@ from bullet import Bullet
 from alien import Alien
 
 
-def check_events(ai_settings, bullets, play_button, screen, ship, stats):
+def check_events(ai_settings, aliens, bullets, play_button, screen, ship, stats):
     """Respond to keypress and mouse movements"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -16,7 +16,7 @@ def check_events(ai_settings, bullets, play_button, screen, ship, stats):
             check_events_key_up(event, ship)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            check_play_button(stats, play_button, mouse_x, mouse_y)
+            check_play_button(ai_settings, aliens, bullets, screen, ship, stats, play_button, mouse_x, mouse_y)
 
 
 def check_events_key_up(event, ship):
@@ -60,7 +60,7 @@ def update_screen(ai_settings, aliens, bullets, play_button, screen, ship,
 
     if not stats.game_active:
         play_button.draw_button()
-        
+
     pygame.display.flip()
 
 
@@ -181,6 +181,7 @@ def ship_hit(ai_settings, aliens, bullets, screen, stats, ship):
         sleep(0.5)
     else:
         stats.game_active = False
+        pygame.mouse.set_visible(True)
 
 
 def check_aliens_bottom(ai_settings, aliens, bullets, screen, ship, stats):
@@ -191,8 +192,14 @@ def check_aliens_bottom(ai_settings, aliens, bullets, screen, ship, stats):
             # Treat as if the aliens hit the ship
             ship_hit(ai_settings, aliens, bullets, screen, stats, ship)
 
-def check_play_button(stats, play_button, mouse_x, mouse_y):
-    """Starts a game when the player clicks"""
-    if play_button.rect.collidepoint(mouse_x, mouse_y):
-        stats.game_active = True
 
+def check_play_button(ai_settings, aliens, bullets, screen, ships, stats,
+                      play_button, mouse_x, mouse_y):
+    """Starts a game when the player clicks"""
+    button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
+    if button_clicked and not stats.game_active:
+        stats.reset_stats()
+        pygame.mouse.set_visible(False)
+        # empty the aliens and bullets
+        aliens.empty()
+        bullets.empty()
