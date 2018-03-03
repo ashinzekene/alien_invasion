@@ -19,7 +19,8 @@ class Scoreboard():
 
     def prep_score(self):
         """Turn scoreboard into a rendered image."""
-        score_str = str(self.stats.score) + " pts"
+        rounded_score = round(self.stats.score, -1)
+        score_str = "{:,}".format(rounded_score) + " pts"
         self.score_image = self.font.render(score_str, False, self.text_color,
                                             self.ai_settings.bg_color)
 
