@@ -1,8 +1,10 @@
 import sys
-import pygame
 from time import sleep
-from bullet import Bullet
+
+import pygame
+
 from alien import Alien
+from bullet import Bullet
 
 
 def check_events(ai_settings, aliens, bullets, play_button, screen, ship, stats):
@@ -32,6 +34,7 @@ def check_events_key_up(event, ship, stats):
     elif event.key == pygame.K_q:
         sys.exit()
     elif event.key == pygame.K_ESCAPE:
+        stats.game_paused = True
         stats.game_active = not stats.game_active
 
 
@@ -177,7 +180,7 @@ def ship_hit(ai_settings, aliens, bullets, screen, stats, ship):
         create_fleet(ai_settings, aliens, screen, ship)
 
         # Pause
-        sleep(0.5)
+        sleep(1)
     else:
         stats.game_active = False
         pygame.mouse.set_visible(True)
@@ -197,7 +200,8 @@ def check_play_button(ai_settings, aliens, bullets, screen, ship, stats,
     """Starts a game when the player clicks"""
     button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
     if button_clicked and not stats.game_active:
-        ai_settings.initialize_dynamic_settings()
+        if not stats.game_paused:
+            ai_settings.initialize_dynamic_settings()
         stats.reset_stats()
         stats.game_active = True
         pygame.mouse.set_visible(False)

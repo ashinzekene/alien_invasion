@@ -3,7 +3,7 @@ class GameStats():
         """Initialize the statistics"""
         self.ai_settings = ai_settings
         self.reset_stats()
-
+        self.game_paused = False
         # Start game as inactive
         self.game_active = False
 
