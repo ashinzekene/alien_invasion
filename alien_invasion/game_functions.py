@@ -193,13 +193,19 @@ def check_aliens_bottom(ai_settings, aliens, bullets, screen, ship, stats):
             ship_hit(ai_settings, aliens, bullets, screen, stats, ship)
 
 
-def check_play_button(ai_settings, aliens, bullets, screen, ships, stats,
+def check_play_button(ai_settings, aliens, bullets, screen, ship, stats,
                       play_button, mouse_x, mouse_y):
     """Starts a game when the player clicks"""
+    print("clicked")
     button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
     if button_clicked and not stats.game_active:
+        print("clicked while inactive")
         stats.reset_stats()
-        pygame.mouse.set_visible(False)
+        stats.game_active = True
+        # pygame.mouse.set_visible(False)
         # empty the aliens and bullets
         aliens.empty()
         bullets.empty()
+
+        create_fleet(ai_settings, aliens, screen, ship)
+        ship.center_ship()
