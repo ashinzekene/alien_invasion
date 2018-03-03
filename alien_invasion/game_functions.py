@@ -13,13 +13,13 @@ def check_events(ai_settings, aliens, bullets, play_button, screen, ship, stats)
         elif event.type == pygame.KEYDOWN:
             check_events_key_down(event, ai_settings, screen, ship, bullets)
         elif event.type == pygame.KEYUP:
-            check_events_key_up(event, ship)
+            check_events_key_up(event, ship, stats)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             check_play_button(ai_settings, aliens, bullets, screen, ship, stats, play_button, mouse_x, mouse_y)
 
 
-def check_events_key_up(event, ship):
+def check_events_key_up(event, ship, stats):
     # Responds to key releases
     if event.key == pygame.K_RIGHT:
         ship.moving_right = False
@@ -31,6 +31,8 @@ def check_events_key_up(event, ship):
         ship.moving_down = False
     elif event.key == pygame.K_q:
         sys.exit()
+    elif event.key == pygame.K_ESCAPE:
+        stats.game_active = not stats.game_active
 
 
 def check_events_key_down(event, ai_settings, screen, ship, bullets):
@@ -202,7 +204,7 @@ def check_play_button(ai_settings, aliens, bullets, screen, ship, stats,
         print("clicked while inactive")
         stats.reset_stats()
         stats.game_active = True
-        # pygame.mouse.set_visible(False)
+        pygame.mouse.set_visible(False)
         # empty the aliens and bullets
         aliens.empty()
         bullets.empty()
