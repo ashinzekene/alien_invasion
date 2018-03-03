@@ -34,6 +34,7 @@ def check_events_key_up(event, ship, stats):
     elif event.key == pygame.K_q:
         sys.exit()
     elif event.key == pygame.K_ESCAPE:
+        pygame.mouse.set_visible(True)
         stats.game_paused = True
         stats.game_active = not stats.game_active
 
@@ -53,13 +54,14 @@ def check_events_key_down(event, ai_settings, screen, ship, bullets):
         fire_bullet(ai_settings, bullets, ship, screen)
 
 
-def update_screen(ai_settings, aliens, bullets, play_button, screen, ship,
+def update_screen(ai_settings, aliens, bullets, play_button, sb, screen, ship,
                   stats):
     """Updates images on the screen and flips to the next screen"""
 
     screen.fill(ai_settings.bg_color)
     aliens.draw(screen)
     ship.blitme()
+    sb.show_score()
     for bullet in bullets.sprites():
         bullet.draw_bullet()
 
