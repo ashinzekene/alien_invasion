@@ -22,7 +22,7 @@ class Scoreboard():
         """Turn the high score into a rendered image"""
         high_score= round(self.stats.high_score, -1)
         high_score_str = "{:,}".format(high_score)
-        self.high_score_image = self.font.render(high_score_str, False, self.ai_settings.bg_color)
+        self.high_score_image = self.font.render(high_score_str, False, self.text_color, self.ai_settings.bg_color)
 
         # center high score at center-top of screen 
         self.high_score_image_rect = self.high_score_image.get_rect()
@@ -44,7 +44,6 @@ class Scoreboard():
 
     def show_score(self):
         """Show score on scoreboard"""
-        # print("Seee scoreboard")
         self.screen.blit(self.score_image, self.score_rect)
         self.screen.blit(self.high_score_image, self.high_score_image_rect)
         
