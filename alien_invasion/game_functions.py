@@ -5,6 +5,7 @@ import pygame
 
 from alien import Alien
 from bullet import Bullet
+from button import Button
 
 
 def check_events(ai_settings, aliens, bullets, play_button, screen, ship, stats):
@@ -36,7 +37,8 @@ def check_events_key_up(event, ship, stats):
     elif event.key == pygame.K_ESCAPE:
         pygame.mouse.set_visible(True)
         stats.game_paused = True
-        stats.game_active = not stats.game_active
+        if not stats.game_over:
+            stats.game_active = not stats.game_active
 
 
 def check_events_key_down(event, ai_settings, screen, ship, bullets):
@@ -87,6 +89,7 @@ def check_bullet_alien_collisions(ai_settings, aliens, bullets, sb, screen, ship
         for aliens in collisions.values():
             stats.score += ai_settings.alien_points
             sb.prep_score()
+        check_high_score(stats, sb)
     if len(aliens) == 0:
         bullets.empty()
         create_fleet(ai_settings, aliens, screen, ship)
@@ -174,6 +177,9 @@ def change_fleet_direction(ai_settings, aliens):
 def ship_hit(ai_settings, aliens, bullets, screen, stats, ship):
     """Responds to ship being hit by an alien"""
     # Decrement ships left
+    print("Ship hit")
+    ship.center_ship()
+    sleep(0.5)
     if stats.ship_left > 0:
         stats.ship_left -= 1
 
@@ -185,9 +191,10 @@ def ship_hit(ai_settings, aliens, bullets, screen, stats, ship):
         create_fleet(ai_settings, aliens, screen, ship)
 
         # Pause
-        sleep(1)
     else:
+        print("Game over")
         stats.game_active = False
+        stats.game_over = True
         pygame.mouse.set_visible(True)
 
 
@@ -207,12 +214,21 @@ def check_play_button(ai_settings, aliens, bullets, screen, ship, stats,
     if button_clicked and not stats.game_active:
         if not stats.game_paused:
             ai_settings.initialize_dynamic_settings()
-        stats.reset_stats()
-        stats.game_active = True
-        pygame.mouse.set_visible(False)
-        # empty the aliens and bullets
-        aliens.empty()
-        bullets.empty()
+        if not stats.game_over:
+            stats.reset_stats()
+            stats.game_active = True
+            pygame.mouse.set_visible(False)
+            # empty the aliens and bullets
+            aliens.empty()
+            bullets.empty()
 
-        create_fleet(ai_settings, aliens, screen, ship)
-        ship.center_ship()
+            create_fleet(ai_settings, aliens, screen, ship)
+            ship.center_ship()
+            print("Game continued")
+        else: print("cannot continue, yaff Game over")
+
+def check_high_score(stats, sb):
+    """Check to see if there is a new high score"""
+    if stats.score > stats.high_score:
+        stats.high_score = stats.score
+        sb.prep_high_score()
