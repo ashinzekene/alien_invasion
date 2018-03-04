@@ -91,6 +91,9 @@ def check_bullet_alien_collisions(ai_settings, aliens, bullets, sb, screen, ship
             sb.prep_score()
         check_high_score(stats, sb)
     if len(aliens) == 0:
+        # New level
+        stats.level += 1
+        sb.prep_level()
         bullets.empty()
         create_fleet(ai_settings, aliens, screen, ship)
         ai_settings.increase_speed(2)
