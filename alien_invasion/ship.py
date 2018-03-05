@@ -46,5 +46,6 @@ class Ship(Sprite):
 
     def center_ship(self):
         """Center the ship on the screen"""
-        self.rect.centerx = self.screen_rect.centerx
-        self.rect.bottom = self.screen_rect.bottom
+        self.float_centerx = self.screen_rect.centerx
+        self.float_centery =  self.screen_rect.bottom - (1/2 * self.rect.height)
+        print("Ship centered to bottom")

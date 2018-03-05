@@ -192,7 +192,8 @@ def ship_hit(ai_settings, aliens, bullets, sb, screen, stats, ship):
         # create a new alien fleet
         create_fleet(ai_settings, aliens, screen, ship)
 
-        # move th ship back to the bottom of the screen
+        # move the ship back to the bottom of the screen
+        ship.center_ship()
 
         # Pause
         sleep(0.5)
@@ -217,14 +218,20 @@ def check_play_button(ai_settings, aliens, bullets, sb, screen, ship, stats,
     """Starts a game when the player clicks"""
     button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
     if button_clicked and not stats.game_active:
-        if not stats.game_paused:
+        if stats.game_paused:
+            stats.game_active = True            
+            pygame.mouse.set_visible(False)            
+        # if stats.game_over:
+
+        else:
+            # Start new game
             ai_settings.initialize_dynamic_settings()
             # Prepare score board
             sb.prep_score()
             sb.prep_level()
             sb.prep_ships()
             sb.prep_high_score()
-        if not stats.game_over:
+            
             stats.reset_stats()
             stats.game_active = True
             pygame.mouse.set_visible(False)
@@ -234,8 +241,6 @@ def check_play_button(ai_settings, aliens, bullets, sb, screen, ship, stats,
 
             create_fleet(ai_settings, aliens, screen, ship)
             ship.center_ship()
-            print("Game continued")
-        else: print("cannot continue, yaff Game over")
 
 def check_high_score(stats, sb):
     """Check to see if there is a new high score"""
