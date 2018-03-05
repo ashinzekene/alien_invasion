@@ -220,12 +220,12 @@ def check_play_button(ai_settings, aliens, bullets, sb, screen, ship, stats,
     if button_clicked and not stats.game_active:
         if stats.game_paused:
             stats.game_active = True            
-            pygame.mouse.set_visible(False)            
+            pygame.mouse.set_visible(False)
+            return            
         if stats.game_over:
             # Reset the button to play
             play_button.prep_msg("PLAY")
             stats.game_over = False
-            start_new_game(ai_settings, aliens, bullets, sb, screen, ship, stats)
         else:
             # Start new game
             start_new_game(ai_settings, aliens, bullets, sb, screen, ship, stats)
