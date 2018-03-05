@@ -150,15 +150,15 @@ def get_number_aliens_y(ai_settings, alien_height, ship_height):
     return number_of_aliens
 
 
-def update_aliens(ai_settings, aliens, bullets, sb, screen, ship, stats):
+def update_aliens(ai_settings, aliens, bullets, play_button, sb, screen, ship, stats):
     """Check if fleet is at the edge then update"""
     check_fleet_edges(ai_settings, aliens)
     aliens.update()
-    check_aliens_bottom(ai_settings, aliens, bullets, sb, screen, ship, stats)
+    check_aliens_bottom(ai_settings, aliens, bullets, play_button, sb, screen, ship, stats)
 
     # Check for ship alien collisions
     if pygame.sprite.spritecollideany(ship, aliens):
-        ship_hit(ai_settings, aliens, bullets, sb, screen, stats, ship)
+        ship_hit(ai_settings, aliens, bullets, play_button, sb, screen, stats, ship)
 
 
 def check_fleet_edges(ai_settings, aliens):
@@ -177,7 +177,7 @@ def change_fleet_direction(ai_settings, aliens):
     ai_settings.fleet_direction *= -1
 
 
-def ship_hit(ai_settings, aliens, bullets, sb, screen, stats, ship):
+def ship_hit(ai_settings, aliens, bullets, play_button, sb, screen, stats, ship):
     """Responds to ship being hit by an alien"""
     # Decrement ships left
     print("Ship hit")
@@ -198,19 +198,19 @@ def ship_hit(ai_settings, aliens, bullets, sb, screen, stats, ship):
         # Pause
         sleep(0.5)
     else:
-        print("Game over")
+        play_button.prep_msg("GAME OVER!!! Restart")
         stats.game_active = False
         stats.game_over = True
         pygame.mouse.set_visible(True)
 
 
-def check_aliens_bottom(ai_settings, aliens, bullets, sb, screen, ship, stats):
+def check_aliens_bottom(ai_settings, aliens, bullets, play_button, sb, screen, ship, stats):
     """Detect aliens that get to the bottom of the screen"""
     screen_rect = screen.get_rect()
     for alien in aliens.sprites():
         if alien.rect.bottom >= screen_rect.bottom:
             # Treat as if the aliens hit the ship
-            ship_hit(ai_settings, aliens, bullets, sb, screen, stats, ship)
+            ship_hit(ai_settings, aliens, bullets, play_button, sb, screen, stats, ship)
 
 
 def check_play_button(ai_settings, aliens, bullets, sb, screen, ship, stats,
@@ -221,29 +221,36 @@ def check_play_button(ai_settings, aliens, bullets, sb, screen, ship, stats,
         if stats.game_paused:
             stats.game_active = True            
             pygame.mouse.set_visible(False)            
-        # if stats.game_over:
-
+        if stats.game_over:
+            # Reset the button to play
+            play_button.prep_msg("PLAY")
+            stats.game_over = False
+            start_new_game(ai_settings, aliens, bullets, sb, screen, ship, stats)
         else:
             # Start new game
-            ai_settings.initialize_dynamic_settings()
-            # Prepare score board
-            sb.prep_score()
-            sb.prep_level()
-            sb.prep_ships()
-            sb.prep_high_score()
-            
-            stats.reset_stats()
-            stats.game_active = True
-            pygame.mouse.set_visible(False)
-            # empty the aliens and bullets
-            aliens.empty()
-            bullets.empty()
-
-            create_fleet(ai_settings, aliens, screen, ship)
-            ship.center_ship()
+            start_new_game(ai_settings, aliens, bullets, sb, screen, ship, stats)
 
 def check_high_score(stats, sb):
     """Check to see if there is a new high score"""
     if stats.score > stats.high_score:
         stats.high_score = stats.score
         sb.prep_high_score()
+
+def start_new_game(ai_settings, aliens, bullets, sb, screen, ship, stats):
+    """Start a new game"""
+    stats.reset_stats()
+    ai_settings.initialize_dynamic_settings()
+    # Prepare score board
+    sb.prep_score()
+    sb.prep_level()
+    sb.prep_ships()
+    sb.prep_high_score()
+    
+    stats.game_active = True
+    pygame.mouse.set_visible(False)
+    # empty the aliens and bullets
+    aliens.empty()
+    bullets.empty()
+
+    create_fleet(ai_settings, aliens, screen, ship)
+    ship.center_ship()
