@@ -8,7 +8,7 @@ from bullet import Bullet
 from button import Button
 
 
-def check_events(ai_settings, aliens, bullets, play_button, screen, ship, stats):
+def check_events(ai_settings, aliens, bullets, play_button, sb, screen, ship, stats):
     """Respond to keypress and mouse movements"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -19,7 +19,7 @@ def check_events(ai_settings, aliens, bullets, play_button, screen, ship, stats)
             check_events_key_up(event, ship, stats)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            check_play_button(ai_settings, aliens, bullets, screen, ship, stats, play_button, mouse_x, mouse_y)
+            check_play_button(ai_settings, aliens, bullets, sb, screen, ship, stats, play_button, mouse_x, mouse_y)
 
 
 def check_events_key_up(event, ship, stats):
@@ -150,15 +150,15 @@ def get_number_aliens_y(ai_settings, alien_height, ship_height):
     return number_of_aliens
 
 
-def update_aliens(ai_settings, aliens, bullets, screen, ship, stats):
+def update_aliens(ai_settings, aliens, bullets, sb, screen, ship, stats):
     """Check if fleet is at the edge then update"""
     check_fleet_edges(ai_settings, aliens)
     aliens.update()
-    check_aliens_bottom(ai_settings, aliens, bullets, screen, ship, stats)
+    check_aliens_bottom(ai_settings, aliens, bullets, sb, screen, ship, stats)
 
     # Check for ship alien collisions
     if pygame.sprite.spritecollideany(ship, aliens):
-        ship_hit(ai_settings, aliens, bullets, screen, stats, ship)
+        ship_hit(ai_settings, aliens, bullets, sb, screen, stats, ship)
 
 
 def check_fleet_edges(ai_settings, aliens):
@@ -177,7 +177,7 @@ def change_fleet_direction(ai_settings, aliens):
     ai_settings.fleet_direction *= -1
 
 
-def ship_hit(ai_settings, aliens, bullets, screen, stats, ship):
+def ship_hit(ai_settings, aliens, bullets, sb, screen, stats, ship):
     """Responds to ship being hit by an alien"""
     # Decrement ships left
     print("Ship hit")
@@ -185,7 +185,7 @@ def ship_hit(ai_settings, aliens, bullets, screen, stats, ship):
     sleep(0.5)
     if stats.ship_left > 0:
         stats.ship_left -= 1
-
+        sb.prep_ships()
         # empty the list of aliens and bullets
         aliens.empty()
         bullets.empty()
@@ -201,22 +201,27 @@ def ship_hit(ai_settings, aliens, bullets, screen, stats, ship):
         pygame.mouse.set_visible(True)
 
 
-def check_aliens_bottom(ai_settings, aliens, bullets, screen, ship, stats):
+def check_aliens_bottom(ai_settings, aliens, bullets, sb, screen, ship, stats):
     """Detect aliens that get to the bottom of the screen"""
     screen_rect = screen.get_rect()
     for alien in aliens.sprites():
         if alien.rect.bottom >= screen_rect.bottom:
             # Treat as if the aliens hit the ship
-            ship_hit(ai_settings, aliens, bullets, screen, stats, ship)
+            ship_hit(ai_settings, aliens, bullets, sb, screen, stats, ship)
 
 
-def check_play_button(ai_settings, aliens, bullets, screen, ship, stats,
+def check_play_button(ai_settings, aliens, bullets, sb, screen, ship, stats,
                       play_button, mouse_x, mouse_y):
     """Starts a game when the player clicks"""
     button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
     if button_clicked and not stats.game_active:
         if not stats.game_paused:
             ai_settings.initialize_dynamic_settings()
+            # Prepare score board
+            sb.prep_score()
+            sb.prep_level()
+            sb.prep_ships()
+            sb.prep_high_score()
         if not stats.game_over:
             stats.reset_stats()
             stats.game_active = True
