@@ -182,7 +182,6 @@ def ship_hit(ai_settings, aliens, bullets, sb, screen, stats, ship):
     # Decrement ships left
     print("Ship hit")
     ship.center_ship()
-    sleep(0.5)
     if stats.ship_left > 0:
         stats.ship_left -= 1
         sb.prep_ships()
@@ -193,7 +192,10 @@ def ship_hit(ai_settings, aliens, bullets, sb, screen, stats, ship):
         # create a new alien fleet
         create_fleet(ai_settings, aliens, screen, ship)
 
+        # move th ship back to the bottom of the screen
+
         # Pause
+        sleep(0.5)
     else:
         print("Game over")
         stats.game_active = False
